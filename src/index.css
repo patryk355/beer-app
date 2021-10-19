@@ -71,10 +71,25 @@ a {
   margin-bottom: 2rem;
 }
 
-.beers .container {
+.beers-container {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
+}
+
+.search {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.search-input {
+  width: 60%;
+  padding: .8rem;
+  border-radius: 4px;
 }
 
 .beer {
@@ -82,7 +97,7 @@ a {
   border: 1px solid rgb(31, 30, 30);
   border-radius: 4px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1rem 1rem 3rem 1rem;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: 10% 20% 70%;
@@ -179,12 +194,15 @@ a {
 /* Media Queries */
 
 @media (min-width: 576px) {
-  .beers .container {
+  .beers-container {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .search-input {
+    width: 40%;
   }
   .beer {
     grid-template-rows: 5% 5% 50% 35%;
-    padding: 2rem;
+    padding: 2rem 2rem 4rem;
   }
   .beer-name {
     grid-column: 1/3;
