@@ -11,10 +11,10 @@ function App() {
         <Navbar />
 
         <Switch>
-          <Route exact path="/">
+          <Route exact path="/beer-app">
             <Beers />
           </Route>
-          <Route path="/beers/:id">
+          <Route path="/beer-app/beers/:id">
             <Beer />
           </Route>
         </Switch>

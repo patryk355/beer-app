@@ -10,8 +10,8 @@ const Navbar = () => {
                     <FaBeer className="beer-icon" />
                 </div>
                 <div className="links">
-                    <Link to="/">Home</Link>
-                    <Link to="/favourite">Favourite Beers</Link>
+                    <Link to="/beer-app">Home</Link>
+                    <Link to="/beer-app/favourite">Favourite Beers</Link>
                 </div>
             </div>
         </div>

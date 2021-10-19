@@ -20,7 +20,7 @@ const Beers = () => {
     }, []);
 
     const handleClick = (id) => {
-        history.push("/beers/" + id)
+        history.push("/beer-app/beers/" + id)
     }
 
     const toggleFav = (e, id) => {
