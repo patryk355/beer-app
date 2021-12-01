@@ -10,7 +10,7 @@ const Beer = () => {
             .then(res => res.json())
             .then(data => setBeer(data[0]))
             .catch(err => console.log(err));
-    }, [])
+    }, [id])
 
     return (
         <div className="container">
@@ -23,7 +23,7 @@ const Beer = () => {
                 <p className="beer-author"><b>Contributed by:</b> {beer.contributed_by}</p>
                 <p className="beer-food">Food Pairing:</p>
                 <ul>
-                    {beer.food_pairing.map((pair) => <li>{pair}</li>)}
+                    {beer.food_pairing.map((pair) => <li key={id}>{pair}</li>)}
                 </ul>
                 <p className="beer-date">First brewed in {beer.first_brewed}</p>
             </div>}
