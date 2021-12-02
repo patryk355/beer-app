@@ -1,65 +1,85 @@
 import { useState, useEffect } from "react";
 import { AiOutlineStar, AiFillStar } from 'react-icons/ai';
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useHistory } from 'react-router-dom';
+import { favActions } from "../store/fav-slice";
 
 const Beers = () => {
+    const dispatch = useDispatch();
+
+    const favItems = useSelector(state => state.fav.favItems);
+
     const [beers, setBeers] = useState(null);
-    const [fav, setFav] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     let history = useHistory();
 
-
     useEffect(() => {
-        fetch('https://api.punkapi.com/v2/beers')
-            .then(res => res.json())
-            .then(data => {
+        const fetchData = async () => {
+            try {
+                const res = await fetch('https://api.punkapi.com/v2/beers');
+
+                if (!res.ok) {
+                    return new Error('Something went wrong!')
+                }
+
+                const data = await res.json();
                 setBeers(data);
-            })
-            .catch(err => console.log(err));
+            } catch (error) {
+                console.log(error.message);
+            }
+        }
+        fetchData();
 
     }, []);
 
-    const handleClick = (id) => {
-        history.push("/beer-app/beers/" + id)
-    }
-
-    const toggleFav = (e, id) => {
-        console.log(id);
-        console.log(fav);
-        if (fav[id]) {
-            fav[id] = false;
-        } else {
-            fav[id] = true;
-        }
+    const showDetailsPageHandler = (id) => {
+        history.push("/beer-app/beers/" + id);
     }
 
     const handleInput = (e) => {
         setSearchTerm(e.target.value.toLowerCase());
     }
 
+    // Search 
     const results = !searchTerm ?
         beers
         :
-        beers.filter(beer => beer.name.toLowerCase().includes(searchTerm));
+        beers.filter(({ name }) => name.toLowerCase().includes(searchTerm));
+
+    // Add item to favourite items
+    const addItemToFavHandler = (id) => {
+        const index = beers.findIndex((beer) => beer.id === id);
+        dispatch(favActions.addToFavItems({ newFavItem: beers[index] }));
+    }
+
+    // Remove item from favourite items
+    const removeItemFromFavHandler = (id) => {
+        const index = favItems.findIndex((fav) => fav.id === id);
+        dispatch(favActions.removeFromFavItems({ index }));
+    }
 
     return (
         <div className="beers">
             <div className="container">
                 <div className="search">
-                    <input type="text" className="search-input" placeholder="Search..." onChange={(e) => handleInput(e)} value={searchTerm} />
+                    <input type="text" className="search-input" placeholder="Search..." onChange={handleInput} value={searchTerm} />
                 </div>
                 <div className="beers-container">
-                    {results && results.map((beer) => (
-                        <div className="beer" key={beer.id} >
-                            <img className="beer-img" src={beer.image_url} alt={beer.name} onClick={(id) => handleClick(beer.id)} />
-                            {/* {fav[beer.id] ?
-                            (<AiFillStar className="icon" onClick={(e, id) => toggleFav(e, beer.id)} />)
-                            :
-                            (<AiOutlineStar className="icon" onClick={(e, id) => toggleFav(e, beer.id)} />)} */}
-                            {/* <AiOutlineStar className="icon" onClick={toggleFav} /> */}
-                            {/* <AiFillStar className="icon"/> */}
-                            <h3 className="beer-name" onClick={(id) => handleClick(beer.id)}>{beer.name}</h3>
-                            <p className="beer-description" onClick={(id) => handleClick(beer.id)}>{beer.description.split('', 100)}...</p>
+                    {results && results.map(({ id, name, description, image_url }) => (
+                        <div className="beer" key={id}>
+                            <img className="beer-img" src={image_url} alt={name} onClick={() => showDetailsPageHandler(id)} />
+
+                            <div className="icon" data-value={id}>
+                                {favItems.findIndex(fav => fav.id === id) !== -1 ? (
+                                    <AiFillStar onClick={() => removeItemFromFavHandler(id)} />
+                                ) : (
+                                    <AiOutlineStar onClick={() => addItemToFavHandler(id)} />
+                                )}
+                            </div>
+
+                            <h3 className="beer-name" onClick={() => showDetailsPageHandler(id)}>{name}</h3>
+                            <p className="beer-description" onClick={() => showDetailsPageHandler(id)}>{description.split('', 100)}...</p>
                         </div>
                     ))}
                 </div>
